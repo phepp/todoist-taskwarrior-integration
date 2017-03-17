@@ -1,0 +1,10 @@
+{
+    "user": {
+        "username": "user",
+        "password": "password"
+    },
+    "tasks": {
+        "ignore_local": ["tmp"],
+        "ignore_remote": []
+    }
+}
