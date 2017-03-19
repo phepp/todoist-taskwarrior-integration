@@ -9,3 +9,4 @@ Features:
   - Automatically install with install.py
   - Push newly created Taskwarrior tasks to Todoist
     - Also push projects: create on Todoist if it doesn't exist or add it to the task "Inbox" if none was specified.
+  - Complete or delete modified Taskwarrior tasks to Todoist
