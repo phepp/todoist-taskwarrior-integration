@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import todoist
 import getpass
 import todoist
@@ -7,22 +8,21 @@ import json
 import sys
 import os
 
+parser = argparse.ArgumentParser(description = 'Install Todoist/Taskwarrior integration hooks.')
+parser.add_argument('-f', '--force', action = 'store_true', help = 'Force install to overwrite config even if it exists.')
+args = parser.parse_args()
 
-if os.path.isfile(os.path.join(os.path.expanduser('~'), '.task', 'hooks', 'config.json')):
+
+if not args.force and os.path.isfile(os.path.join(os.path.expanduser('~'), '.task', 'hooks', 'config.json')):
     print("Config file already exists. Skipping config.")
 else:
     # ask the user for their todoist credentials & update config
     print('Warning: username and password for Todoist stored in plaintext in config file at ~/.task/hooks/config.json!')
 
     # TODO ask for a list of projects to ignore instead of making them manually update config.
+    config = {}
+    config['user'] = {}
 
-    # load config
-    try:
-        with open('config.json', 'r') as configFile:
-            config = json.load(configFile)
-    except Exception:
-       print('Failed to load config.')
-       sys.exit(1)
 
     success = False
     i = 0
