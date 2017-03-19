@@ -27,7 +27,7 @@ else:
     user = api.user.login(config['user']['username'], config['user']['password'])
     resp = api.sync()
     projects = resp['projects']
-    prev_tasK_ids = [f['id'] for f in resp['items']]
+    prev_task_ids = [f['id'] for f in resp['items']]
 
     # gather the parts of the task that are useful for todoist
     if 'description' in new_task:
@@ -49,14 +49,8 @@ else:
         remote_proj = [f['id'] for f in projects if f['name'] == proj][0]
     elif not proj == 'Inbox':
         # add project remotely
-        api.projects.add(proj)
-        api.commit()
-        print("Added new project to Todoist: %s." % proj)
-        api = todoist.TodoistAPI()
-        user = api.user.login(config['user']['username'], config['user']['password'])
-        resp = api.sync()
-        projects = resp['projects']
-        remote_proj = [f['id'] for f in projects if f['name'] == proj][0]
+        temp_id = api.projects.add(proj)['id']
+        remote_proj = api.commit()['temp_id_mapping'][temp_id]
     else:
         remote_proj = [f['id'] for f in projects if f['name'] == 'Inbox'][0]
     if not date == '':
@@ -68,15 +62,7 @@ else:
         item = api.items.add(title,
                              project_id = remote_proj)
     # commit the new task to Todoist, then determine what uuid was assigned and record it on the local task.
-    api.commit()
-    api = todoist.TodoistAPI()
-    user = api.user.login(config['user']['username'], config['user']['password'])
-    resp = api.sync()
-    tasks = resp['items']
-    try:
-        tdi_id = [f['id'] for f in tasks if f['project_id'] == remote_proj and f['content'] == title and not f['id'] in prev_tasK_ids][0]
-    except Exception:
-        tdi_id = 'not found'
+    tdi_id = api.commit()['temp_id_mapping'][item['id']]
     new_task['tdi_uuid'] = tdi_id
     print('Uploaded task to todoist.')
 
