@@ -59,4 +59,5 @@ else:
         print('Failed to install config.')
         sys.exit(1)
 shutil.copy('on-add-task.py', os.path.join(os.path.expanduser('~'), '.task', 'hooks'))
+shutil.copy('on-modify-task.py', os.path.join(os.path.expanduser('~'), '.task', 'hooks'))
 sys.exit(0)

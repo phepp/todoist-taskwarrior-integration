@@ -65,7 +65,7 @@ else:
     try:
         tdi_id = api.commit()['temp_id_mapping'][item['id']]
     except KeyError:
-        tdi_id = item['id']
+        tdi_id = str(int(item['id']))
     new_task['tdi_uuid'] = tdi_id
     print('Uploaded task to todoist.')
 
