@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-from datetime import datetime
 import todoist
 import json
-import time
 import sys
 import os
 
