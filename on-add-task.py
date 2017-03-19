@@ -16,8 +16,6 @@ except Exception:
 
 # capture input
 task = sys.stdin.readline()
-# TODO remove: for testing
-print('The new task is the following: %s' % task)
 new_task = json.loads(task)
 
 # check that config is correct
@@ -29,7 +27,7 @@ else:
     user = api.user.login(config['user']['username'], config['user']['password'])
     resp = api.sync()
     projects = resp['projects']
-    tasks = resp['items']
+    prev_tasK_ids = [f['id'] for f in resp['items']]
 
     # gather the parts of the task that are useful for todoist
     if 'description' in new_task:
@@ -69,7 +67,17 @@ else:
     else:
         item = api.items.add(title,
                              project_id = remote_proj)
+    # commit the new task to Todoist, then determine what uuid was assigned and record it on the local task.
     api.commit()
+    api = todoist.TodoistAPI()
+    user = api.user.login(config['user']['username'], config['user']['password'])
+    resp = api.sync()
+    tasks = resp['items']
+    try:
+        tdi_id = [f['id'] for f in tasks if f['project_id'] == remote_proj and f['content'] == title and not f['id'] in prev_tasK_ids][0]
+    except Exception:
+        tdi_id = 'not found'
+    new_task['tdi_uuid'] = tdi_id
     print('Uploaded task to todoist.')
 
 # write out the task to taskwarrior
