@@ -19,7 +19,7 @@ task = sys.stdin.readline()
 new_task = json.loads(task)
 
 # check that config is correct
-if not 'user' in config or not 'username' in config['user'] or not 'password' in config['user'] or not 'tasks' in config:
+if not 'user' in config or not 'username' in config['user'] or not 'password' in config['user']:
     print('Failed to read config properly. Can''t upload to Todoist.')
 else:
     # connect to todoist
@@ -62,7 +62,10 @@ else:
         item = api.items.add(title,
                              project_id = remote_proj)
     # commit the new task to Todoist, then determine what uuid was assigned and record it on the local task.
-    tdi_id = api.commit()['temp_id_mapping'][item['id']]
+    try:
+        tdi_id = api.commit()['temp_id_mapping'][item['id']]
+    except KeyError:
+        tdi_id = item['id']
     new_task['tdi_uuid'] = tdi_id
     print('Uploaded task to todoist.')
 
